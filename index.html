@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10264b">
+<title>BAC ÉCONOMIE 2027 — Bibliothèque</title>
+<style>
+:root{--navy:#10264b;--blue:#1d4e89;--sky:#eaf3ff;--yellow:#ffd34e;--ink:#17243a;--muted:#65738a;--line:#e4eaf2}
+*{box-sizing:border-box}body{margin:0;background:#f5f8fc;color:var(--ink);font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#10264b,#1d4e89);color:white;padding:22px 16px 28px}
+.wrap{max-width:1050px;margin:auto}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:14px;background:var(--yellow);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:18px}
+h1{font-size:21px;margin:0;letter-spacing:.3px}header p{margin:5px 0 0;color:#d8e7ff;font-size:13px}
+.hero{padding:25px 0 5px}.hero h2{font-size:25px;margin:0 0 8px}.hero p{margin:0;color:#d8e7ff;line-height:1.5;font-size:14px}
+main{padding:18px 15px 45px}.search{display:flex;gap:8px;margin:0 0 18px}.search input{width:100%;border:1px solid var(--line);border-radius:13px;padding:14px;font-size:15px;background:white;outline:none}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px}.section-title h3{margin:0;font-size:18px;color:var(--navy)}.count{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.subject{border:1px solid var(--line);border-radius:15px;background:white;padding:15px;text-align:left;cursor:pointer;min-height:100px;box-shadow:0 3px 12px #10264b08}
+.subject .ico{font-size:23px}.subject strong{display:block;margin-top:9px;color:var(--navy);font-size:14px}.subject small{color:var(--muted);font-size:11px}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:15px;margin-top:17px}.panel h3{margin:0 0 5px;color:var(--navy)}.panel p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.docs{margin-top:12px;display:grid;gap:9px}.doc{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px}.doc b{font-size:13px}.doc small{display:block;color:var(--muted);margin-top:4px}.doc a{background:var(--navy);color:white;text-decoration:none;border-radius:9px;padding:9px 11px;font-size:12px;white-space:nowrap}
+.empty{padding:18px;text-align:center;color:var(--muted);font-size:13px;background:#f8fbff;border-radius:12px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(min-width:700px){header{padding:30px 24px}.hero h2{font-size:32px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}main{padding:25px 24px 50px}}
+</style></head>
+<body>
+<header><div class="wrap">
+<div class="brand"><div class="logo">BE</div><div><h1>BAC ÉCONOMIE 2027</h1><p>Bibliothèque numérique • Économie & Gestion</p></div></div>
+<div class="hero"><h2>Révise mieux. Réussis ton bac.</h2><p>Retrouve tes cours, exercices et sujets de bac dans une seule bibliothèque.</p></div>
+</div></header>
+<main class="wrap">
+<div class="search"><input id="search" type="search" placeholder="Rechercher un cours ou une matière..."></div>
+<div class="section-title"><h3>📚 Matières</h3><span class="count">BAC ÉCONOMIE 2027</span></div>
+<div class="grid" id="subjects"></div>
+<section class="panel" id="library"><h3>Bienvenue dans la bibliothèque</h3><p>Choisis une matière pour afficher ses documents PDF.</p><div class="docs" id="docs"><div class="empty">Les documents ajoutés apparaîtront ici.</div></div></section>
+<footer>© 2027 BAC ÉCONOMIE 2027 • Bonne révision !</footer>
+</main>
+<script>
+const subjects=[
+["Économie","📈"],["Gestion / تصرف","📊"],["Mathématiques","➗"],["Histoire","🏛️"],["Géographie","🌍"],["Arabe","🖋️"],["Français","🇫🇷"],["Anglais","🇬🇧"],["Italien","🇮🇹"],["Philosophie","💭"],["Informatique","💻"]
+];
+// Ajoute tes PDF dans le dossier documents puis complète cette liste.
+// Exemple : {subject:"Économie",title:"Chapitre 1 - La croissance",type:"Cours",file:"documents/economie-ch1.pdf"}
+const documents=[];
+let selected="";
+const subjectBox=document.getElementById("subjects"), docsBox=document.getElementById("docs"), search=document.getElementById("search");
+function renderSubjects(){
+ const q=search.value.toLowerCase();
+ subjectBox.innerHTML="";
+ subjects.filter(s=>s[0].toLowerCase().includes(q)||documents.some(d=>d.subject===s[0]&&d.title.toLowerCase().includes(q))).forEach(s=>{
+  const n=documents.filter(d=>d.subject===s[0]).length;
+  const b=document.createElement("button");b.className="subject";b.innerHTML=`<span class="ico">${s[1]}</span><strong>${s[0]}</strong><small>${n} document(s)</small>`;
+  b.onclick=()=>{selected=s[0];renderDocs()};subjectBox.appendChild(b);
+ });
+}
+function renderDocs(){
+ const q=search.value.toLowerCase();
+ const list=documents.filter(d=>(!selected||d.subject===selected)&&(`${d.title} ${d.subject} ${d.type||""}`).toLowerCase().includes(q));
+ document.querySelector("#library h3").textContent=selected||"Résultats de recherche";
+ document.querySelector("#library p").textContent="Ouvre un document pour le lire dans ton navigateur.";
+ docsBox.innerHTML=list.length?"":"<div class='empty'>Aucun document pour le moment. Les PDF seront ajoutés par l’administrateur.</div>";
+ list.forEach(d=>{const el=document.createElement("div");el.className="doc";el.innerHTML=`<div><b>📄 ${d.title}</b><small>${d.type||"Document"} • ${d.subject}</small></div><a href="${d.file}" target="_blank" rel="noopener">Lire PDF</a>`;docsBox.appendChild(el)});
+}
+search.addEventListener("input",()=>{renderSubjects();renderDocs()});renderSubjects();
+</script></body></html>
